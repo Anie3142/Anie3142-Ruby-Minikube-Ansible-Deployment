@@ -1,0 +1,45 @@
+# A kubernetes deployment for a ruby application
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp
+spec:
+  selector:
+    matchLabels:
+      run: webapp
+  replicas: 4 # Using 4 pods would improve high availabilty
+  template:
+    metadata:
+      labels:
+        run: webapp
+    spec:
+      containers:
+      - name: webapp
+        image: adj-webapp 
+        imagePullPolicy: IfNotPresent #This only pulls a new image if not available
+        resources:
+          limits: # Setting pod resource limit to mem:128 and cpu:150m
+            memory: "128Mi"
+            cpu: "150m"
+        ports:
+        - name: app-port
+          containerPort: 80
+        livenessProbe:  # Liveness probs to  know when to restart a container.
+          exec:
+            command:
+            - sh
+            - -c
+            - curl -s --http0.9 http://localhost:80/healthcheck | grep -c "OK"3
+          failureThreshold: 3
+          periodSeconds: 15
+          initialDelaySeconds: 10
+
+        readinessProbe: # Readiness probes to know when a container is ready to start accepting traffic.
+          exec:
+            command:
+            - sh
+            - -c
+            - curl -s --http0.9 http://localhost:80/healthcheck | grep -c "OK"
+          failureThreshold: 3
+          periodSeconds: 15
+          initialDelaySeconds: 5
