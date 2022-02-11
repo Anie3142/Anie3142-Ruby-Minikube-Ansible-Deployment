@@ -31,8 +31,8 @@ spec:
             - -c
             - curl -s --http0.9 http://localhost:80/healthcheck | grep -c "OK"
           failureThreshold: 3
-          periodSeconds: 30
-          initialDelaySeconds: 60
+          periodSeconds: 20
+          initialDelaySeconds: 15
         readinessProbe: # Readiness probes to know when a container is ready to start accepting traffic.
           exec:
             command:
