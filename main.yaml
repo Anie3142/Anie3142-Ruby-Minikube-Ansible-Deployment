@@ -1,0 +1,67 @@
+---
+- name: Create all resources and deploy all kubernetes deployments to minikube
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+  vars:
+    apps_dir: 'apps/http_server/'
+    kubenertes_definition_dir: 'kubernetes/'
+    image_name: adj-webapp
+    image_tag: latest
+    replicas: 4
+
+  pre_tasks:
+
+    - name: check the status of minikube.
+      command: minikube status
+      register: minikube_status
+      changed_when: false
+      ignore_errors: true
+
+    - name: start minikube if it's not running.
+      command: minikube start --vm = true
+      when: "not minikube_status.stdout or 'Running' not in minikube_status.stdout"
+
+  tasks:
+
+    - name: get existing image hash.
+      shell: |
+        eval $(minikube docker-env)
+        docker images -q {{ image_name }}
+      register: image_hash
+      changed_when: false
+
+    - name: Build Docker image if it's not already built.
+      shell: |
+        eval $(minikube docker-env)
+        Docker build . -t {{ image_name }}
+      args:
+        chdir: "{{ apps_dir }}"
+      when: not image_hash.stdout
+
+    - name: Load image to minikube
+      shell: minikube image load {{ image_name }}:{{ image_tag }}
+
+    - name: Create a deployment for Web-App.
+      shell: kubectl apply -f deployments.yaml
+      args:
+          chdir: "{{ kubenertes_definition_dir }}"
+
+    - name: Create a Service for Web App.
+      shell: kubectl apply -f services.yaml
+      args:
+          chdir: "{{ kubenertes_definition_dir }}"
+
+    - name: Scale up deployment.
+      shell: kubectl scale deployment webapp --replicas {{ replicas }}
+
+  post_tasks:
+
+    - name: exposing Web app on the host via Minikube.
+      command: minikube service webapp-service --url
+      changed_when: false
+      register: minikube_service
+
+    - debug:
+        msg: "Web app URL: {{ minikube_service['stdout_lines'][0] }}"
