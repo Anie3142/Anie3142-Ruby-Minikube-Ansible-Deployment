@@ -16,7 +16,7 @@ In this project, we have a playbook that will start minikube if it's not running
 ```
 
 
-## Step by Step Instructions to run the project
+## Step-by-Step Instructions
 
 
 **What you'll need**
@@ -67,22 +67,18 @@ In this project, we have a playbook that will start minikube if it's not running
     - Scale deployment to required number of replicas
     - Expose the Web app on the host via Minikube.
 
-**How to connect to the app**
+## How to connect to the app
 
-Since we are using the loadbalancer type, minikube has to tunnel a route to services sets their Ingress to the ClusterIP. 
-
-If you type 'kubectl get svc' you'll notice the IP for service type loadbalancer is in "pending" state
+Since we are using the loadbalancer type, minikube has to tunnel a route to services sets their Ingress to the ClusterIP. If you type 'kubectl get svc' you'll notice the IP for service type loadbalancer is in "pending" state
 
 To allow load balancer access to your external host open a new terminal window(as you cannot exit the process) and input "minikube tunnel". You can check your services again and get the IP to be used on your browser. You should be able to sucessfully connect now. 
 
+## NOTE
 **Non-Current Software Verion Use**
 - http0.9: This had to be used in the curl command for liveness and readiness probes as the current http version doesn't handle the requests with headerless response returning a direct text of "OK"
 
-
 **Liveness and Readiness Probes**
-This example uses both readiness and liveness probes. The kubelet will send the first readiness probe 5 seconds after the container starts. This will attempt to connect to the ruby container on port 80. If the probe succeeds, the Pod will be marked as ready. The kubelet will continue to run this check every 10 seconds.
-
-In addition to the readiness probe, this configuration includes a liveness probe. The kubelet will run the first liveness probe 15 seconds after the container starts. Similar to the readiness probe, this will attempt to connect to the ruby container on port 80. If the liveness probe fails, the container will be restarted.
+- This example uses both readiness and liveness probes. The kubelet will send the first readiness probe 5 seconds after the container starts. This will attempt to connect to the ruby container on port 80. If the probe succeeds, the Pod will be marked as ready. The kubelet will continue to run this check every 10 seconds. In addition to the readiness probe, this configuration includes a liveness probe. The kubelet will run the first liveness probe 15 seconds after the container starts. Similar to the readiness probe, this will attempt to connect to the ruby container on port 80. If the liveness probe fails, the container will be restarted.
 
 ## Documentation
 
