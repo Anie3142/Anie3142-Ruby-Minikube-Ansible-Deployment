@@ -80,12 +80,7 @@ To allow load balancer access to your external host open a new terminal window(a
 **Liveness and Readiness Probes**
 - This example uses both readiness and liveness probes. The kubelet will send the first readiness probe 5 seconds after the container starts. This will attempt to connect to the ruby container on port 80. If the probe succeeds, the Pod will be marked as ready. The kubelet will continue to run this check every 10 seconds. In addition to the readiness probe, this configuration includes a liveness probe. The kubelet will run the first liveness probe 15 seconds after the container starts. Similar to the readiness probe, this will attempt to connect to the ruby container on port 80. If the liveness probe fails, the container will be restarted.
 
-## Documentation
-
-[Documentation](https://github.com/Anie3142/Anie3142-Ruby-Minikube-Ansible-Deployment/blob/main/README.md)
-
-
-## Run Locally
+## To Run Locally
 
 Clone the project
 
@@ -119,6 +114,19 @@ Delete Project
   cd kubernetes/
   kubectl delete -f .
 ```
+
+
+## Documentation
+
+[Documentation](https://github.com/Anie3142/Anie3142-Ruby-Minikube-Ansible-Deployment/blob/main/README.md)
+
+
+
+
+
+
+
+
 
 
 # Hi, I'm Anie! 👋
