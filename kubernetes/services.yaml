@@ -1,0 +1,16 @@
+# Cluster API service to expose deployment on kubernetes
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-service
+  labels:
+    run: webapp
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    run: webapp
+  type: LoadBalancer
